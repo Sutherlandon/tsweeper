@@ -43,7 +43,7 @@ class Board extends Component {
     while (board.length < 9) {
       let row = [];
       while (row.length < 9) {
-        row.push({ state: 'revealed', value: 0 });
+        row.push({ state: 'hidden', value: 0 });
       }
       board.push(row);
     }
@@ -105,8 +105,8 @@ class Board extends Component {
           Welcome to TSweeper a text based minesweeper.
         </div>
         <br/>
-        {this.state.frames.map(board => (
-          <Frame board={board} />
+        {this.state.frames.map((board, i) => (
+          <Frame key={`Frame_${i}`}board={board} />
         ))}
         <div className='line'>
           > <input className='terminal-input' type='text' />
