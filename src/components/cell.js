@@ -6,11 +6,26 @@ const Cell = (props) => {
    * b - bomb
    * h - hidden
    */
-  return {
-    flagged: <span style={{color: 'green'}}>F</span>,
-    bomb: <span style={{color: 'red'}}>*</span>,
-    hidden: <span style={{color: 'white'}}>-</span>,
-  }[props.state] || <span style={{color: 'white'}}>{props.neighbors}</span>;
+  const { state, value } = props;
+
+  if (state === 'flagged') {
+    return <span style={{color: 'green'}}>F&nbsp;</span>;
+  }
+
+  if (state === 'hidden') {
+    return <span style={{color: 'white'}}>-&nbsp;</span>;
+  }
+
+  // -1 for bomb
+  if (value === -1) {
+    return <span style={{color: 'red'}}>*&nbsp;</span>;
+  }
+
+  if (value === 0) {
+    return <span style={{color: 'white'}}>&nbsp;&nbsp;</span>;
+  }
+
+  return <span style={{color: 'white'}}>{props.value}&nbsp;</span>;
 };
 
 export default Cell;

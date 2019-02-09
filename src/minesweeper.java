@@ -56,24 +56,25 @@ class mineSweeperGrid {
     public mineSweeperCell[][] msg = new mineSweeperCell[SIZE][SIZE];
 
     public mineSweeperGrid() {
-		for(int i = 0; i < SIZE; i++)
-			for(int j = 0; j < SIZE; j++){
-				msg[i][j] = new mineSweeperCell();
+			for(int i = 0; i < SIZE; i++)
+				for(int j = 0; j < SIZE; j++){
+					msg[i][j] = new mineSweeperCell();
+				}
+
+			for(int i = 0; i <= 9; i = i + 0){
+				int x = (int)(Math.random() * SIZE);
+				int y = (int)(Math.random() * SIZE);
+				if(msg[x][y].isBomb() == false){
+					msg[x][y].setTheBomb(true);
+					i++;
+				}
 			}
 
-		for(int i = 0; i <= 9; i = i + 0){
-			int x = (int)(Math.random() * SIZE);
-			int y = (int)(Math.random() * SIZE);
-			if(msg[x][y].isBomb() == false){
-				msg[x][y].setTheBomb(true);
-				i++;
-			}
-		}
-
-		for(int i=0; i<SIZE; i++)
-			for(int j=0; j<SIZE; j++){
-				int count = countNeighbors(i,j);
-				msg[i][j].neighbors(count);
+			for(int i=0; i<SIZE; i++){
+				for(int j=0; j<SIZE; j++){
+					int count = countNeighbors(i,j);
+					msg[i][j].neighbors(count);
+				}
 			}
 		}
 
@@ -81,11 +82,11 @@ class mineSweeperGrid {
 	    int bombCount = 0;
 	    
 	    for( int i = counterX - 1;  i <= counterX + 1; i++)
-			for( int j = counterY - 1; j <= counterY + 1; j++)
-				if((i == counterX && j == counterY) || i < 0 || i >= SIZE || j < 0 || j >= SIZE) ;
-				else
-					if( msg[i][j].isBomb())
-						bombCount++;
+				for( int j = counterY - 1; j <= counterY + 1; j++)
+					if((i == counterX && j == counterY) || i < 0 || i >= SIZE || j < 0 || j >= SIZE) ;
+					else
+						if(msg[i][j].isBomb())
+							bombCount++;
 
 	    return bombCount;
 	}

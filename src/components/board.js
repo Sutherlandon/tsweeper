@@ -1,35 +1,102 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
+import Cell from './cell';
 
-const Frame = (props) => {
+const Line = (props) => {
   return (
-    <div className='frame'>
-      <div>0 1 2 3 4 5 6 7 8</div>
-      <div>0 - - - - - - - - -</div>
-      <div>1 - - - - - - - - -</div>
-      <div>2 - - - - - - - - -</div>
-      <div>3 - - - - - - - - -</div>
-      <div>4 - - - - - - - - -</div>
-      <div>5 - - - - - - - - -</div>
-      <div>6 - - - - - - - - -</div>
-      <div>7 - - - - - - - - -</div>
-      <div>8 - - - - - - - - -</div>
-  </div>
+    <div className='line'>
+      <span className='index'>{props.index} </span>
+      {props.cells.map((cell, i) =>
+        <Cell key={`cell_${props.index}_${i}`} value={cell.value} state={cell.state} />
+       )}
+    </div>
   );
 }
 
-class Board extends React.Component {
+const Frame = (props) => {
+  return (
+    <Fragment>
+      <div className='line index'>&nbsp;&nbsp;0 1 2 3 4 5 6 7 8</div>
+      {props.board.map((line, i) => <Line key={`line_${i}`} index={i} cells={line} />)}
+    </Fragment>
+  );
+}
+
+class Board extends Component {
   constructor(props) {
     super(props);
 
     this.state = {}
+    this.buildBoard();
+  }
+
+  // builds a new game to play
+  buildBoard() {
+    // a cell state can be flagged, hidden, or revealed
+    // a cell value is the number of bombs it is neighboring or -1 if bomb
+    let board = []
+    while (board.length < 9) {
+      let row = [];
+      while (row.length < 9) {
+        row.push({ state: 'revealed', value: 0 });
+      }
+      board.push(row);
+    }
+
+    // distribute bombs
+    let numBombs = 0;
+    while (numBombs <= 9) {
+      // get a random cell
+      let x = Math.floor(Math.random() * Math.floor(9)) 
+      let y = Math.floor(Math.random() * Math.floor(9)) 
+
+      console.log( x, y);
+      // if it is not a bomb make it one
+      if (board[x][y].value !== -1) {
+        board[x][y].value = -1;
+        numBombs += 1;
+      }
+    }
+
+    console.log(board);
+
+    // calculates the value of a cell
+    let countNeighbors = (i, j) => {
+      let neighbors = 0;
+      for (let x = i - 1; x <= i + 1; x++) {
+        for (let y = j - 1; y <= j + 1; y++) {
+          // if this cell is not out of bounds and is a bomb +1 to neighbors
+          if (
+            !((j === i && y === j) || x < 0 || x >= 9 || y < 0 || y >= 9) &&
+            board[x][y].value === -1
+          ) {
+            neighbors += 1;
+          }
+        }
+      }
+      return neighbors;
+    }
+
+    // calculate the rest of the cells values
+    board.forEach((line, i) => {
+      line.forEach((cell, j) => {
+        if (cell.value !== -1) {
+          cell.value = countNeighbors(i, j);
+        }
+      })
+    })
+
+    // we set state directly here because we are running this function in the
+    // constructor of the board
+    // eslint-disable-next-line
+    this.state = { board };
   }
 
   render() {
+    console.log(this.state.board)
     return (
       <div className='terminal'>
         <div>Would you like to play a game? y/n</div>
-        <div>y</div>
-        <div></div>
+        <Frame board={this.state.board} />
       </div>
     );
   }
