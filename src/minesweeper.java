@@ -91,7 +91,7 @@ class mineSweeperGrid {
 	    return bombCount;
 	}
     
-    public void revealSaidSpace(int x, int y){
+  public void revealSaidSpace(int x, int y){
 		final String WHITE = "\u001b[0;37;40m";
 		final String RED = "\u001b[2;31;40m";
 		final String GREEN = "\u001b[0;32;40m";

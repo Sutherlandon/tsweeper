@@ -15,8 +15,14 @@ const Line = (props) => {
 const Frame = (props) => {
   return (
     <Fragment>
-      <div className='line index'>&nbsp;&nbsp;0 1 2 3 4 5 6 7 8</div>
+      <div className='line index'>
+        &nbsp;&nbsp;0 1 2 3 4 5 6 7 8
+      </div>
       {props.board.map((line, i) => <Line key={`line_${i}`} index={i} cells={line} />)}
+      <br />
+      <div className='line'>If you want to Reveal a space, type 1</div>
+      <div className='line'>If you want to flag a space, type 2</div>
+      <br />
     </Fragment>
   );
 }
@@ -88,15 +94,23 @@ class Board extends Component {
     // we set state directly here because we are running this function in the
     // constructor of the board
     // eslint-disable-next-line
-    this.state = { board };
+    this.state = { frames: [board] };
   }
 
   render() {
     console.log(this.state.board)
     return (
       <div className='terminal'>
-        <div>Would you like to play a game? y/n</div>
-        <Frame board={this.state.board} />
+        <div className='line'>
+          Welcome to TSweeper a text based minesweeper.
+        </div>
+        <br/>
+        {this.state.frames.map(board => (
+          <Frame board={board} />
+        ))}
+        <div className='line'>
+          > <input className='terminal-input' type='text' />
+        </div>
       </div>
     );
   }

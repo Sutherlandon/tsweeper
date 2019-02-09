@@ -13,6 +13,10 @@
   color: white;
 }
 
+.line {
+  white-space: normal;
+}
+
 .terminal {
   border-radius: 0.125em;
   border: 2px solid white;
@@ -23,6 +27,18 @@
   text-align: left;
   white-space: normal;
   width: 80%;
+}
+
+.terminal input {
+  background-color: inherit;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.terminal input:focus {
+  outline: none;
 }
 
 .index {
