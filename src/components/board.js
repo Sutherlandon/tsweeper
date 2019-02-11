@@ -25,6 +25,15 @@ const Frame = (props) => {
 }
 
 const Instructions = (props) => {
+
+  if (props.gameState === 'win') {
+    return <div className='line'>You Win! Refresh to play again.</div>
+  }
+
+  if (props.gameState === 'lose') {
+    return <div className='line'>You Lose! Refresh to try again.</div>
+  }
+
   let secondQ;
   if (props.action) {
     if (props.action === '1') {
@@ -62,7 +71,9 @@ class Board extends Component {
 
     this.state = {
       terminalInput: '',
+      gameState: '',
     }
+    
     this.handleSubmit = this.handleSubmit.bind(this);
 
     // build the game
@@ -127,6 +138,21 @@ class Board extends Component {
     this.state = { board };
   }
 
+  checkForWin() {
+    const { board } = this.state;
+
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        // if bomb and not revealed
+        if (board[i][j].value !== -1 && board[i][j].state === 'hidden') {
+          return false;
+        }
+      }
+    }
+
+    this.setState({ gameState: 'win' });
+  }
+
   componentDidMount() {
     this.terminalInput.focus();
     console.log(this.state);
@@ -139,7 +165,6 @@ class Board extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const { action, terminalInput: value } = this.state;
-    console.log('submited', value);
 
     if (!action) {
       this.setState({
@@ -147,6 +172,10 @@ class Board extends Component {
          terminalInput: '',
       });
     } else {
+      if (value.length < 2) {
+        return;
+      }
+
       // parse the coordinates
       const x = value.substring(0, 1);
       const y = value.substring(1, 2);
@@ -154,6 +183,7 @@ class Board extends Component {
       // reveal or flag the specified space
       if (action === '1') {
         this.revealSaidSpace(x, y);
+        this.checkForWin();
       } else if (action === '2') {
         const { board } = this.state;
         board[x][y].state = 'flagged';
@@ -169,23 +199,45 @@ class Board extends Component {
   revealSaidSpace(x, y) {
     const { board } = this.state;
 
+    x = parseInt(x);
+    y = parseInt(y);
+
     // ignore coordinates out of bounds
+    console.log(x, y)
     if (x < 0 || x >= 9 || y < 0 || y >= 9 || board[x][y].state === 'revealed') {
 			return;
     }
 
     // if it's a bomb, reveal all bombs
+    let gameState;
     if (board[x][y].value === -1) {
       board.forEach(row => {
         row.forEach(cell => {
-          if (board[x][y] === -1) {
-            board[x][y].state = 'revealed';
+          if (cell.value === -1) {
+            cell.state = 'revealed';
           }
         });
       });
+
+      gameState = 'lose';
+
     // reveal all neighbors
     } else if (board[x][y].value === 0) {
+      // set this cell
       board[x][y].state = 'revealed';
+
+      // reveal all neighbors
+      this.revealSaidSpace(x + 1, y);
+			this.revealSaidSpace(x - 1, y);
+			this.revealSaidSpace(x, y + 1);
+			this.revealSaidSpace(x, y - 1);
+
+			this.revealSaidSpace(x - 1, y - 1);
+			this.revealSaidSpace(x - 1, y + 1);
+			this.revealSaidSpace(x + 1, y + 1);
+      this.revealSaidSpace(x + 1, y - 1);
+      
+      /*
       for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
           // if this cell is not out of bounds
@@ -194,13 +246,15 @@ class Board extends Component {
           }
         }
       }
+      */ 
     } else {
       board[x][y].state = 'revealed';
     }
 
     this.setState({
-      board,
       action: 0,
+      board,
+      gameState,
       terminalInput: '',
     });
   }
@@ -213,7 +267,7 @@ class Board extends Component {
         </div>
         <br/>
         <Frame board={this.state.board} />
-        <Instructions action={this.state.action} />
+        <Instructions action={this.state.action} gameState={this.state.gameState} />
         <div className='line'>
           <form onSubmit={this.handleSubmit}>
             > <input
