@@ -97,14 +97,13 @@ class Board extends Component {
     }
 
     // calculates the value of a cell
-    let countNeighbors = (i, j) => {
+    let countNeighbors = (x, y) => {
       let neighbors = 0;
-      for (let x = i - 1; x <= i + 1; x++) {
-        for (let y = j - 1; y <= j + 1; y++) {
-          // if this cell is not out of bounds and is a bomb +1 to neighbors
-          if (
-            !((j === i && y === j) || x < 0 || x >= 9 || y < 0 || y >= 9) &&
-            board[x][y].value === -1
+      for (let i = x - 1; i <= x + 1; i++) {
+        for (let j = y - 1; j <= y + 1; j++) {
+          // if this cell is not out of bounds and is a bomb
+          if (!((i === x && j === y) || i < 0 || i >= 9 || j < 0 || j >= 9) &&
+            board[i][j].value === -1
           ) {
             neighbors += 1;
           }
@@ -130,6 +129,7 @@ class Board extends Component {
 
   componentDidMount() {
     this.terminalInput.focus();
+    console.log(this.state);
   }
 
   componentDidUpdate() {
@@ -164,6 +164,45 @@ class Board extends Component {
         });
       }
     }
+  }
+
+  revealSaidSpace(x, y) {
+    const { board } = this.state;
+
+    // ignore coordinates out of bounds
+    if (x < 0 || x >= 9 || y < 0 || y >= 9 || board[x][y].state === 'revealed') {
+			return;
+    }
+
+    // if it's a bomb, reveal all bombs
+    if (board[x][y].value === -1) {
+      board.forEach(row => {
+        row.forEach(cell => {
+          if (board[x][y] === -1) {
+            board[x][y].state = 'revealed';
+          }
+        });
+      });
+    // reveal all neighbors
+    } else if (board[x][y].value === 0) {
+      board[x][y].state = 'revealed';
+      for (let i = x - 1; i <= x + 1; i++) {
+        for (let j = y - 1; j <= y + 1; j++) {
+          // if this cell is not out of bounds
+          if (!((i === x && j === y) || i < 0 || i >= 9 || j < 0 || j >= 9)) {
+            this.revealSaidSpace(i, j);
+          }
+        }
+      }
+    } else {
+      board[x][y].state = 'revealed';
+    }
+
+    this.setState({
+      board,
+      action: 0,
+      terminalInput: '',
+    });
   }
 
   render() {
