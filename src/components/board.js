@@ -20,9 +20,38 @@ const Frame = (props) => {
       </div>
       {props.board.map((line, i) => <Line key={`line_${i}`} index={i} cells={line} />)}
       <br />
-      <div className='line'>If you want to Reveal a space, type 1</div>
-      <div className='line'>If you want to flag a space, type 2</div>
+    </Fragment>
+  );
+}
+
+const Instructions = (props) => {
+  let secondQ;
+  if (props.action) {
+    if (props.action === '1') {
+      secondQ = (
+        <Fragment>
+          <div className='line'>> 1</div>
+          <div className='line'>Enter the space you want to reveal:</div>
+          <br />
+        </Fragment>
+      );
+    } else if (props.action === '2') {
+      secondQ = (
+        <Fragment>
+          <div className='line'>> 2</div>
+          <div className='line'>Enter the space you want to flag:</div>
+          <br />
+        </Fragment>
+      );
+    }
+  }
+
+  return (
+    <Fragment>
+      <div className='line'>If you want to reveal a space type '1'</div>
+      <div className='line'>If you want to flag a space, type '2'</div>
       <br />
+      {secondQ}
     </Fragment>
   );
 }
@@ -31,7 +60,12 @@ class Board extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {}
+    this.state = {
+      terminalInput: '',
+    }
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    // build the game
     this.buildBoard();
   }
 
@@ -55,15 +89,12 @@ class Board extends Component {
       let x = Math.floor(Math.random() * Math.floor(9)) 
       let y = Math.floor(Math.random() * Math.floor(9)) 
 
-      console.log( x, y);
       // if it is not a bomb make it one
       if (board[x][y].value !== -1) {
         board[x][y].value = -1;
         numBombs += 1;
       }
     }
-
-    console.log(board);
 
     // calculates the value of a cell
     let countNeighbors = (i, j) => {
@@ -94,22 +125,66 @@ class Board extends Component {
     // we set state directly here because we are running this function in the
     // constructor of the board
     // eslint-disable-next-line
-    this.state = { frames: [board] };
+    this.state = { board };
+  }
+
+  componentDidMount() {
+    this.terminalInput.focus();
+  }
+
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const { action, terminalInput: value } = this.state;
+    console.log('submited', value);
+
+    if (!action) {
+      this.setState({
+        action: value,
+         terminalInput: '',
+      });
+    } else {
+      // parse the coordinates
+      const x = value.substring(0, 1);
+      const y = value.substring(1, 2);
+
+      // reveal or flag the specified space
+      if (action === '1') {
+        this.revealSaidSpace(x, y);
+      } else if (action === '2') {
+        const { board } = this.state;
+        board[x][y].state = 'flagged';
+        this.setState({
+          board,
+          action: 0,
+          terminalInput: '',
+        });
+      }
+    }
   }
 
   render() {
-    console.log(this.state.board)
     return (
       <div className='terminal'>
         <div className='line'>
           Welcome to TSweeper a text based minesweeper.
         </div>
         <br/>
-        {this.state.frames.map((board, i) => (
-          <Frame key={`Frame_${i}`}board={board} />
-        ))}
+        <Frame board={this.state.board} />
+        <Instructions action={this.state.action} />
         <div className='line'>
-          > <input className='terminal-input' type='text' />
+          <form onSubmit={this.handleSubmit}>
+            > <input
+                className='terminal-input'
+                onChange={event => this.setState({terminalInput: event.target.value})}
+                type='text' 
+                ref={input => this.terminalInput = input}
+                value={this.state.terminalInput}
+              />
+          </form>
         </div>
       </div>
     );
