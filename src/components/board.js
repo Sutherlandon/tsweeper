@@ -24,14 +24,13 @@ const Frame = (props) => {
   );
 }
 
-const Instructions = (props) => {
-
+const Prompts = (props) => {
   if (props.gameState === 'win') {
-    return <div className='line'>You Win! Refresh to play again.</div>
+    return <div className='line' style={{ color: 'green'}}>You Win! Refresh to play again.</div>
   }
 
   if (props.gameState === 'lose') {
-    return <div className='line'>You Lose! Refresh to try again.</div>
+    return <div className='line' style={{ color: 'red'}}>You Lose! Refresh to try again.</div>
   }
 
   let secondQ;
@@ -40,16 +39,14 @@ const Instructions = (props) => {
       secondQ = (
         <Fragment>
           <div className='line'>> 1</div>
-          <div className='line'>Enter the space you want to reveal:</div>
-          <br />
+          <div className='line'>Space to reveal (ie. 34):</div>
         </Fragment>
       );
     } else if (props.action === '2') {
       secondQ = (
         <Fragment>
           <div className='line'>> 2</div>
-          <div className='line'>Enter the space you want to flag:</div>
-          <br />
+          <div className='line'>Space to flag (ie: 29):</div>
         </Fragment>
       );
     }
@@ -57,9 +54,7 @@ const Instructions = (props) => {
 
   return (
     <Fragment>
-      <div className='line'>If you want to reveal a space type '1'</div>
-      <div className='line'>If you want to flag a space, type '2'</div>
-      <br />
+      <div className='line'>Commands: (1) Reveal, (2) flag</div>
       {secondQ}
     </Fragment>
   );
@@ -70,8 +65,9 @@ class Board extends Component {
     super(props);
 
     this.state = {
-      terminalInput: '',
+      action: 0,
       gameState: '',
+      terminalInput: '',
     }
     
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -135,7 +131,7 @@ class Board extends Component {
     // we set state directly here because we are running this function in the
     // constructor of the board
     // eslint-disable-next-line
-    this.state = { board };
+    this.state.board = board;
   }
 
   checkForWin() {
@@ -167,18 +163,27 @@ class Board extends Component {
     const { action, terminalInput: value } = this.state;
 
     if (!action) {
-      this.setState({
-        action: value,
-         terminalInput: '',
-      });
+      // validate the command given
+      if (value !== '1' && value !== '2') {
+        this.setState({
+          error: `${value} is not a valid command`,
+          terminalInput: '',
+        })
+      } else {
+        this.setState({
+          action: value,
+          error: '',
+          terminalInput: '',
+        });
+      }
     } else {
       if (value.length < 2) {
         return;
       }
 
       // parse the coordinates
-      const x = value.substring(0, 1);
-      const y = value.substring(1, 2);
+      const x = parseInt(value.substring(0, 1));
+      const y = parseInt(value.substring(1, 2));
 
       // reveal or flag the specified space
       if (action === '1') {
@@ -186,12 +191,24 @@ class Board extends Component {
         this.checkForWin();
       } else if (action === '2') {
         const { board } = this.state;
-        board[x][y].state = 'flagged';
-        this.setState({
-          board,
-          action: 0,
-          terminalInput: '',
-        });
+
+        // validate the flag
+        if (board[x][y].state === 'revealed') {
+          this.setState({
+            error: `${x},${y} has already been revealed`,
+            action: 0,
+            terminalInput: '',
+          })
+
+        } else {
+          board[x][y].state = 'flagged';
+          this.setState({
+            action: 0,
+            board,
+            error: '',
+            terminalInput: '',
+          });
+        }
       }
     }
   }
@@ -199,11 +216,7 @@ class Board extends Component {
   revealSaidSpace(x, y) {
     const { board } = this.state;
 
-    x = parseInt(x);
-    y = parseInt(y);
-
     // ignore coordinates out of bounds
-    console.log(x, y)
     if (x < 0 || x >= 9 || y < 0 || y >= 9 || board[x][y].state === 'revealed') {
 			return;
     }
@@ -236,17 +249,6 @@ class Board extends Component {
 			this.revealSaidSpace(x - 1, y + 1);
 			this.revealSaidSpace(x + 1, y + 1);
       this.revealSaidSpace(x + 1, y - 1);
-      
-      /*
-      for (let i = x - 1; i <= x + 1; i++) {
-        for (let j = y - 1; j <= y + 1; j++) {
-          // if this cell is not out of bounds
-          if (!((i === x && j === y) || i < 0 || i >= 9 || j < 0 || j >= 9)) {
-            this.revealSaidSpace(i, j);
-          }
-        }
-      }
-      */ 
     } else {
       board[x][y].state = 'revealed';
     }
@@ -263,22 +265,28 @@ class Board extends Component {
     return (
       <div className='terminal'>
         <div className='line'>
-          Welcome to TSweeper a text based minesweeper.
+          Welcome to T<span style={{color: 'red'}}>*</span>Sweeper a text based minesweeper.
+          Type (9 + Enter) for instructions.
         </div>
         <br/>
         <Frame board={this.state.board} />
-        <Instructions action={this.state.action} gameState={this.state.gameState} />
-        <div className='line'>
-          <form onSubmit={this.handleSubmit}>
-            > <input
-                className='terminal-input'
-                onChange={event => this.setState({terminalInput: event.target.value})}
-                type='text' 
-                ref={input => this.terminalInput = input}
-                value={this.state.terminalInput}
-              />
-          </form>
-        </div>
+        <Prompts action={this.state.action} gameState={this.state.gameState} />
+        <div className='line' style={{ color: 'red' }}>{this.state.error}</div>
+        {this.state.gameState !== 'win' && this.state.gameState !== 'lose'
+        ? <div className='line'>
+            <form onSubmit={this.handleSubmit}>
+              > <input
+                  className='terminal-input'
+                  onChange={(event) => this.setState({
+                    terminalInput: event.target.value.substring(0, this.state.action === 0 ? 1 : 2)
+                  })}
+                  type='number' 
+                  ref={input => this.terminalInput = input}
+                  value={this.state.terminalInput}
+                />
+            </form>
+          </div>
+        : null }
       </div>
     );
   }

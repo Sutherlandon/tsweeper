@@ -1,3 +1,9 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -21,12 +27,13 @@
   border-radius: 0.125em;
   border: 2px solid white;
   font-family: 'Courier New', Courier, monospace;
-  height: 25em;
+  min-height: 25em;
   margin-top: 2em;
   padding: 0.1em 0.5em;
   text-align: left;
   white-space: normal;
   width: 80%;
+  
 }
 
 .terminal input {
