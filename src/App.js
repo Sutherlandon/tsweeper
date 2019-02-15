@@ -9,6 +9,9 @@ class App extends Component {
         <header className="App-container">
           <Game />
         </header>
+        <footer>
+          Created by <a href='https://sutherlandon.com'>Sutherlandon</a>
+        </footer>
       </div>
     );
   }

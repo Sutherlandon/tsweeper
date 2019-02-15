@@ -1,22 +1,39 @@
+html {
+  background-color: #282c34;
+  color: white;
+}
+
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
+footer {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+footer a {
+  color: white;
+}
+
 .App {
+  font-family: 'Courier New', Courier, monospace;
   text-align: center;
 }
 
 .App-container {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /*justify-content: center;*/
   font-size: calc(10px + 2vmin);
-  color: white;
+}
+
+.icon {
+  border-radius: 0.125em;
+  border: 2px solid white;
+  margin: 1em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  width: content;
 }
 
 .line {
@@ -26,14 +43,12 @@ input[type=number]::-webkit-outer-spin-button {
 .terminal {
   border-radius: 0.125em;
   border: 2px solid white;
-  font-family: 'Courier New', Courier, monospace;
   min-height: 25em;
-  margin-top: 2em;
+  margin: 2em auto 1em;
   padding: 0.1em 0.5em;
   text-align: left;
   white-space: normal;
   width: 80%;
-  
 }
 
 .terminal input {

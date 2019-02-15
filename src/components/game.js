@@ -134,7 +134,9 @@ class Game extends Component {
       }
     } else {
       if (value.length < 2) {
-        this.setState({ error: 'Your coordinates must be given as a two digit number'});
+        this.setState({
+          error: 'Your coordinates must be given as a two digit number'
+        });
         return;
       }
 
@@ -233,6 +235,7 @@ class Game extends Component {
       this.setState({
         action: 0,
         board,
+        error: '',
         gameState,
         terminalInput: '',
       });
