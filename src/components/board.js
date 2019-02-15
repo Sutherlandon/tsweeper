@@ -266,7 +266,6 @@ class Board extends Component {
       <div className='terminal'>
         <div className='line'>
           Welcome to T<span style={{color: 'red'}}>*</span>Sweeper a text based minesweeper.
-          Type (9 + Enter) for instructions.
         </div>
         <br/>
         <Frame board={this.state.board} />
