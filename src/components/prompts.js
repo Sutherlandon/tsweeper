@@ -47,8 +47,8 @@ const Prompts = (props) => {
           <div className='command'>(2)Flag,&nbsp;</div>
           <div className='command'>(3)Help</div>
         </div>
-        {secondQ}
       </div>
+      {secondQ}
     </Fragment>
   );
 };
