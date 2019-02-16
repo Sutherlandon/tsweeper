@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Prompts from './prompts';
 import Board from './board';
 
@@ -14,12 +14,11 @@ class Game extends Component {
     
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
-    // build the game
-    this.buildBoard();
   }
 
-  // builds a new game to play
+  /**
+   * Builds a new board to play on
+   */ 
   buildBoard() {
     // a cell state can be flagged, hidden, or revealed
     // a cell value is the number of bombs it is neighboring or -1 if bomb
@@ -71,12 +70,19 @@ class Game extends Component {
       })
     })
 
-    // we set state directly here because we are running this function in the
-    // constructor of the board
-    // eslint-disable-next-line
-    this.state.board = board;
+    // put the game in the beginning state
+    this.setState({
+      action: 0,
+      board,
+      donePlaying: false,
+      gameState: '',
+      terminalInput: '',
+    });
   }
 
+  /**
+   * Scans the board and determines if the game has been won
+   */
   checkForWin() {
     const { board } = this.state;
 
@@ -94,12 +100,19 @@ class Game extends Component {
 
   componentDidMount() {
     console.log(this.state);
+
+    // build the game
+    this.buildBoard();
   }
 
   componentDidUpdate() {
     console.log(this.state);
   }
 
+  /**
+   * Handles changes in the text field
+   * @param {*} event 
+   */
   handleChange(event) {
     let terminalInput, { value } = event.target;
     if (value.match(/^[0-9]*/)) {
@@ -114,9 +127,13 @@ class Game extends Component {
     }
   }
 
+  /**
+   * Handles submitting of a command
+   * @param {*} event 
+   */
   handleSubmit(event) {
     event.preventDefault();
-    const { action, terminalInput: value } = this.state;
+    const { action, gameState, terminalInput: value } = this.state;
 
     if (!action) {
       // validate the command given
@@ -124,13 +141,22 @@ class Game extends Component {
         this.setState({
           error: `${value} is not a valid command`,
           terminalInput: '',
-        })
-      } else {
-        this.setState({
-          action: value,
-          error: '',
-          terminalInput: '',
         });
+      } else {
+        // if the game is over, and the 1 command is sent, build a new game
+        if (['win', 'lose'].includes(gameState)) {
+          if (value === '1') {
+            this.buildBoard();
+          } else {
+            this.setState({ donePlaying: true });
+          }
+        } else {
+          this.setState({
+            action: value,
+            error: '',
+            terminalInput: '',
+          });
+        }
       }
     } else {
       if (value.length < 2) {
@@ -170,6 +196,12 @@ class Game extends Component {
     }
   }
 
+  /**
+   * Reveals the specified space and cascades if it's a bomb or blank
+   * @param {*} x The x coordiate of the space to reveal
+   * @param {*} y The y corrdiate of the space to reveal
+   * @param {*} cascade Flag to specify if user input triggered this function or a cascade did
+   */
   revealSaidSpace(x, y, cascade = false) {
     const { board } = this.state;
 
@@ -245,7 +277,7 @@ class Game extends Component {
   /**
    * Reveals all the spaces around a cell that are not flagged if the number of flags
    * around the cell is the same as the number of bombs
-   * @param {} x 
+   * @param {*} x 
    * @param {*} y 
    */
   revealAllButFlaggedNeighbors(x, y) {
@@ -279,6 +311,9 @@ class Game extends Component {
     }
   }
 
+  /**
+   * render the component
+   */
   render() {
     return (
       <div className='terminal'>
@@ -287,18 +322,28 @@ class Game extends Component {
         </div>
         <br/>
         <Board board={this.state.board} />
-        <Prompts action={this.state.action} gameState={this.state.gameState} />
-        <div className='line' style={{ color: 'red' }}>{this.state.error}</div>
-        <div className='line'>
-          <form onSubmit={this.handleSubmit}>
-            > <input
-                className='terminal-input'
-                onChange={this.handleChange}
-                type='number' 
-                value={this.state.terminalInput}
-              />
-          </form>
-        </div>
+        {!this.state.donePlaying
+          ? (
+            <Fragment>
+              <Prompts action={this.state.action} gameState={this.state.gameState} />
+              <div className='line' style={{ color: 'red' }}>{this.state.error}</div>
+              <div className='line'>
+                <form onSubmit={this.handleSubmit}>
+                  > <input
+                      className='terminal-input'
+                      onChange={this.handleChange}
+                      type='number' 
+                      value={this.state.terminalInput}
+                    />
+                </form>
+              </div>
+            </Fragment>
+          ) : (
+            <div className='line'>
+              Thanks for playing! Have a nice day! :)
+            </div>
+          )
+        }
       </div>
     );
   }
