@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import Prompts from './prompts';
 import Board from './board';
 
+const BOARD_SIZE = 9;
+
 class Game extends Component {
   constructor(props) {
     super(props);
@@ -23,9 +25,9 @@ class Game extends Component {
     // a cell state can be flagged, hidden, or revealed
     // a cell value is the number of bombs it is neighboring or -1 if bomb
     let board = []
-    while (board.length < 9) {
+    while (board.length < BOARD_SIZE) {
       let row = [];
-      while (row.length < 9) {
+      while (row.length < BOARD_SIZE) {
         row.push({ state: 'hidden', value: 0 });
       }
       board.push(row);
@@ -33,10 +35,10 @@ class Game extends Component {
 
     // distribute bombs
     let numBombs = 0;
-    while (numBombs <= 9) {
+    while (numBombs <= BOARD_SIZE) {
       // get a random cell
-      let x = Math.floor(Math.random() * Math.floor(9)) 
-      let y = Math.floor(Math.random() * Math.floor(9)) 
+      let x = Math.floor(Math.random() * Math.floor(BOARD_SIZE)) 
+      let y = Math.floor(Math.random() * Math.floor(BOARD_SIZE)) 
 
       // if it is not a bomb make it one
       if (board[x][y].value !== -1) {
@@ -51,7 +53,7 @@ class Game extends Component {
       for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
           // if this cell is not out of bounds and is a bomb
-          if (!((i === x && j === y) || i < 0 || i >= 9 || j < 0 || j >= 9) &&
+          if (!((i === x && j === y) || i < 0 || i >= BOARD_SIZE || j < 0 || j >= BOARD_SIZE) &&
             board[i][j].value === -1
           ) {
             neighbors += 1;
@@ -86,8 +88,8 @@ class Game extends Component {
   checkForWin() {
     const { board } = this.state;
 
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
         // if bomb and not revealed
         if (board[i][j].value !== -1 && board[i][j].state === 'hidden') {
           return false;
@@ -115,7 +117,7 @@ class Game extends Component {
    */
   handleChange(event) {
     let terminalInput, { value } = event.target;
-    if (value.match(/^[0-9]*/)) {
+    if (value.match(/^[0-BOARD_SIZE]*/)) {
       console.log(this.state.action, value)
       if (['1', '2'].includes(this.state.action)) {
         terminalInput = value.substring(0, 2);
@@ -197,6 +199,15 @@ class Game extends Component {
   }
 
   /**
+   * Checks to see if Coordinates are in bounds
+   * @param {*} x 
+   * @param {*} y 
+   */
+  inBounds(x, y) {
+    return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
+  }
+
+  /**
    * Reveals the specified space and cascades if it's a bomb or blank
    * @param {*} x The x coordiate of the space to reveal
    * @param {*} y The y corrdiate of the space to reveal
@@ -205,8 +216,9 @@ class Game extends Component {
   revealSaidSpace(x, y, cascade = false) {
     const { board } = this.state;
 
-    // ignore coordinates out of bounds
-    if (x < 0 || x >= 9 || y < 0 || y >= 9) {
+    // error if coordinates out of bounds
+    if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
+      // if reveal is due to a cascase, do not error on out of bounds
       if (cascade) { return; }
 
       this.setState({
@@ -215,23 +227,28 @@ class Game extends Component {
         terminalInput: '',
       });
 
-    // ignore coordinates already revealed
+    // error if coordinates already revealed
     } else if (board[x][y].state === 'revealed') {
+      // if reveal is due to a cascade, do not error on already revealed
       if (cascade) { return; }
 
+      /*
       this.setState({
         action: 0,
         error: `${x},${y} has already been revealed`,
         terminalInput: '',
       });
+      */
+      this.revealAllButFlaggedNeighbors(x, y);
       
     // passed all pre-checks, reveal the space
     } else {
+      let gameState;
+
       // reveal the space
       board[x][y].state = 'revealed';
 
       // if it's a bomb, reveal all bombs
-      let gameState;
       if (board[x][y].value === -1) {
         board.forEach(row => {
           row.forEach(cell => {
@@ -274,6 +291,20 @@ class Game extends Component {
     }
   }
 
+  countNeighborFlags(x, y, board) {
+    let neighbors = 0;
+    for (let i = x - 1; i <= x + 1; i++) {
+      for (let j = y - 1; j <= y + 1; j++) {
+        // if the neighbor is flagged, count it
+        if (!(i === x && j === y) && this.inBounds(i, j) && board[i][j].state === 'flagged') {
+          neighbors += 1;
+        }
+      }
+    }
+    console.log('flagged neighbors', x, y, neighbors);
+    return neighbors;
+  }
+
   /**
    * Reveals all the spaces around a cell that are not flagged if the number of flags
    * around the cell is the same as the number of bombs
@@ -281,30 +312,16 @@ class Game extends Component {
    * @param {*} y 
    */
   revealAllButFlaggedNeighbors(x, y) {
-    const countNeighborFlags = (x, y) => {
-      let neighbors = 0;
-      for (let i = x - 1; i <= x + 1; i++) {
-        for (let j = y - 1; j <= y + 1; j++) {
-          // if this cell is not out of bounds and is a bomb
-          if (!((i === x && j === y) || i < 0 || i >= 9 || j < 0 || j >= 9) &&
-            this.state.board[i][j].state === 'flagged'
-          ) {
-            neighbors += 1;
-          }
-        }
-      }
-      return neighbors;
-    }
+    const numFlags = this.countNeighborFlags(x, y, this.state.board);
+    const { board } = this.state;
 
     // if all possible bombs are flagged, reveal the remaining spaces
-    if (countNeighborFlags(x, y) === this.state.board[x][y].value) {
+    if ( numFlags === this.state.board[x][y].value) {
       for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
-          // if this cell is not out of bounds and is a bomb
-          if (!((i === x && j === y) || i < 0 || i >= 9 || j < 0 || j >= 9) &&
-            this.state.board[i][j].state !== 'flagged'
-          ) {
-            this.revealSaidSpace(i, j);
+          // if the neighbor is not flagged, reveal it
+          if (!(i === x && j === y) && this.inBounds(i, j) && board[i][j].state !== 'flagged') {
+            this.revealSaidSpace(i, j, true);
           }
         }
       }
