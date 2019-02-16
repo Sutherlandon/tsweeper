@@ -27,6 +27,15 @@ footer a {
   font-size: calc(10px + 2vmin);
 }
 
+.commandList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.command {
+  word-wrap: none;
+}
+
 .icon {
   border-radius: 0.125em;
   border: 2px solid white;

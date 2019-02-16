@@ -40,8 +40,15 @@ const Prompts = (props) => {
 
   return (
     <Fragment>
-      <div className='line'>Commands: (1) Reveal, (2) Flag</div>
-      {secondQ}
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div className='line'>Commands:&nbsp;</div>
+        <div className='line commandList'>
+          <div className='command'>(1)Reveal,&nbsp;</div>
+          <div className='command'>(2)Flag,&nbsp;</div>
+          <div className='command'>(3)Help</div>
+        </div>
+        {secondQ}
+      </div>
     </Fragment>
   );
 };

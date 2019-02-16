@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Prompts from './prompts';
 import Board from './board';
+import Instructions from './instructions';
 
 const BOARD_SIZE = 9;
 
@@ -139,11 +140,33 @@ class Game extends Component {
 
     if (!action) {
       // validate the command given
-      if (value !== '1' && value !== '2') {
+      if (!['1', '2', '3', '4'].includes(value)) {
         this.setState({
           error: `${value} is not a valid command`,
           terminalInput: '',
         });
+      } else if ( value === '3') {
+        this.setState({
+          action: 0,
+          error: '',
+          terminalInput: '',
+          showInstructions: true
+        });
+      } else if ( value === '4') {
+        if (this.state.showInstructions) {
+          this.setState({
+            action: 0,
+            error: '',
+            terminalInput: '',
+            showInstructions: false
+          });
+        } else {
+          this.setState({
+            action: 0,
+            error: 'The Instructions dialog is not open',
+            terminalInput: '',
+          });
+        }
       } else {
         // if the game is over, and the 1 command is sent, build a new game
         if (['win', 'lose'].includes(gameState)) {
@@ -232,13 +255,6 @@ class Game extends Component {
       // if reveal is due to a cascade, do not error on already revealed
       if (cascade) { return; }
 
-      /*
-      this.setState({
-        action: 0,
-        error: `${x},${y} has already been revealed`,
-        terminalInput: '',
-      });
-      */
       this.revealAllButFlaggedNeighbors(x, y);
       
     // passed all pre-checks, reveal the space
@@ -291,6 +307,12 @@ class Game extends Component {
     }
   }
 
+  /**
+   * Counts the number of neighbors are flagged
+   * @param {*} x The x coordinate of the cell in question
+   * @param {*} y The y coordinate of the cell in question
+   * @param {*} board The game board in it's current state
+   */
   countNeighborFlags(x, y, board) {
     let neighbors = 0;
     for (let i = x - 1; i <= x + 1; i++) {
@@ -301,7 +323,6 @@ class Game extends Component {
         }
       }
     }
-    console.log('flagged neighbors', x, y, neighbors);
     return neighbors;
   }
 
@@ -316,7 +337,7 @@ class Game extends Component {
     const { board } = this.state;
 
     // if all possible bombs are flagged, reveal the remaining spaces
-    if ( numFlags === this.state.board[x][y].value) {
+    if ( numFlags === board[x][y].value) {
       for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
           // if the neighbor is not flagged, reveal it
@@ -338,7 +359,10 @@ class Game extends Component {
           Welcome to T<span style={{color: 'red'}}>*</span>Sweeper a text based minesweeper.
         </div>
         <br/>
-        <Board board={this.state.board} />
+        {this.state.showInstructions
+          ? <Instructions/>
+          : <Board board={this.state.board} />
+        }
         {!this.state.donePlaying
           ? (
             <Fragment>
