@@ -15,7 +15,10 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="logo.svg">
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="C:\Users\Landon\GitHub\tsweeper\src\logo.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -66,19 +69,19 @@
        y="77.773811"
        style="stroke-width:0.26458332" />
     <path
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.71433072;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="M 134.62115,550.14512 V 294.43083 H 390.33543 646.04972 V 550.14512 805.8594 H 390.33543 134.62115 Z"
        id="path4548"
        inkscape:connector-curvature="0"
        transform="scale(0.26458333)" />
     <rect
-       style="fill:#282c34;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#282c34;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4550"
-       width="123.32047"
-       height="123.47053"
-       x="41.666134"
-       y="83.382141"
-       ry="5.8586426" />
+       width="135.31548"
+       height="135.31548"
+       x="35.618511"
+       y="77.901489"
+       ry="0" />
   </g>
   <g
      inkscape:groupmode="layer"
