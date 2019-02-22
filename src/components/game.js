@@ -102,14 +102,12 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state);
-
     // build the game
     this.buildBoard();
   }
 
   componentDidUpdate() {
-    //console.log(this.state);
+    // console.log(this.state);
   }
 
   /**
@@ -119,7 +117,6 @@ class Game extends Component {
   handleChange(event) {
     let terminalInput, { value } = event.target;
     if (value.match(/^[0-BOARD_SIZE]*/)) {
-      console.log(this.state.action, value)
       if (['1', '2'].includes(this.state.action)) {
         terminalInput = value.substring(0, 2);
       } else {
