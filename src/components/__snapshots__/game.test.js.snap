@@ -1,0 +1,877 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`calculates cell values properly 1`] = `
+<div
+  className="terminal"
+>
+  <div
+    className="line"
+  >
+    Welcome to T
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+    Sweeper a text based minesweeper.
+  </div>
+  <br />
+  <div
+    className="line index"
+  >
+      0 1 2 3 4 5 6 7 8
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      0
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      1
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      2
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      3
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      4
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      5
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      6
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      7
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <div
+    className="line"
+  >
+    <span
+      className="index"
+    >
+      8
+       
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+    <span
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      - 
+    </span>
+  </div>
+  <br />
+  <div
+    className="line"
+  >
+    Commands: (1) Reveal, (2) Flag
+  </div>
+  <div
+    className="line"
+    style={
+      Object {
+        "color": "red",
+      }
+    }
+  />
+  <div
+    className="line"
+  >
+    <form
+      onSubmit={[Function]}
+    >
+      &gt; 
+      <input
+        className="terminal-input"
+        onChange={[Function]}
+        type="number"
+        value=""
+      />
+    </form>
+  </div>
+</div>
+`;

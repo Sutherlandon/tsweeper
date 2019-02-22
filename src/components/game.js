@@ -93,17 +93,17 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state);
+    //console.log(this.state);
   }
 
   componentDidUpdate() {
-    console.log(this.state);
+    //console.log(this.state);
   }
 
   handleChange(event) {
     let terminalInput, { value } = event.target;
     if (value.match(/^[0-9]*/)) {
-      console.log(this.state.action, value)
+      //console.log(this.state.action, value)
       if (['1', '2'].includes(this.state.action)) {
         terminalInput = value.substring(0, 2);
       } else {
