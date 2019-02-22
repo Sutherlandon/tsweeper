@@ -6,9 +6,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-container">
-          <Game />
-        </header>
+        <Game />
         <footer>
           Created by <a href='https://sutherlandon.com'>Sutherlandon</a>
         </footer>

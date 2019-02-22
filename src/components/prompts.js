@@ -3,17 +3,19 @@ import React, { Fragment } from 'react';
 const Prompts = (props) => {
   if (props.gameState === 'win') {
     return (
-      <div className='line' style={{ color: 'green'}}>
-        <span style={{ color: 'green'}}>You Lose!</span> Play again? (1) Yes, (2) No.
-      </div>
+      <Fragment>
+        <div className='line' style={{ color: 'green'}}>You Win! :D</div>
+        <div className='line'>Play again? (1) Yes, (2) No.</div>
+      </Fragment>
     );
   }
 
   if (props.gameState === 'lose') {
     return (
-      <div className='line'>
-        <span style={{ color: 'red'}}>You Lose!</span> Play again? (1) Yes, (2) No.
-      </div>
+      <Fragment>
+        <div className='line' style={{ color: 'red'}}>You lose! :(</div>
+        <div className='line'>Try again? (1) Yes, (2) No.</div>
+      </Fragment>
     );
   }
 
@@ -38,7 +40,14 @@ const Prompts = (props) => {
 
   return (
     <Fragment>
-      <div className='line'>Commands: (1) Reveal, (2) Flag</div>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div className='line'>Commands:&nbsp;</div>
+        <div className='line commandList'>
+          <div className='command'>(1)Reveal,&nbsp;</div>
+          <div className='command'>(2)Flag,&nbsp;</div>
+          <div className='command'>(3)Help</div>
+        </div>
+      </div>
       {secondQ}
     </Fragment>
   );
