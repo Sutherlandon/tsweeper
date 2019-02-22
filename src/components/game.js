@@ -54,9 +54,7 @@ class Game extends Component {
       for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
           // if this cell is not out of bounds and is a bomb
-          if (!((i === x && j === y) || i < 0 || i >= BOARD_SIZE || j < 0 || j >= BOARD_SIZE) &&
-            board[i][j].value === -1
-          ) {
+          if (!(i === x && j === y) && this.inBounds(i, j) && board[i][j].value === -1) {
             neighbors += 1;
           }
         }
@@ -107,7 +105,7 @@ class Game extends Component {
   }
 
   componentDidUpdate() {
-    // console.log(this.state);
+    console.log(this.state);
   }
 
   /**
@@ -143,20 +141,12 @@ class Game extends Component {
           terminalInput: '',
         });
       } else if ( value === '3') {
-        this.setState({
-          action: 0,
-          error: '',
-          terminalInput: '',
-          showInstructions: true
-        });
+        this.setState({ showInstructions: true });
+        this.prepareForNextMove();
       } else if ( value === '4') {
         if (this.state.showInstructions) {
-          this.setState({
-            action: 0,
-            error: '',
-            terminalInput: '',
-            showInstructions: false
-          });
+          this.setState({ showInstructions: false });
+          this.prepareForNextMove();
         } else {
           this.setState({
             action: 0,
@@ -165,7 +155,7 @@ class Game extends Component {
           });
         }
       } else {
-        // if the game is over, and the 1 command is sent, build a new game
+        // if the game is over, build a new game or say goodbye
         if (['win', 'lose'].includes(gameState)) {
           if (value === '1') {
             this.buildBoard();
@@ -207,12 +197,8 @@ class Game extends Component {
           });
         } else {
           board[x][y].state = 'flagged';
-          this.setState({
-            action: 0,
-            board,
-            error: '',
-            terminalInput: '',
-          });
+          this.setState({ board });
+          this.prepareForNextMove();
         }
       }
     }
@@ -237,7 +223,7 @@ class Game extends Component {
     const { board } = this.state;
 
     // error if coordinates out of bounds
-    if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
+    if (!this.inBounds(x,y)) {
       // if reveal is due to a cascase, do not error on out of bounds
       if (cascade) { return; }
 
@@ -294,33 +280,57 @@ class Game extends Component {
         this.revealSaidSpace(x + 1, y + 1, true);
       }
 
-      this.setState({
-        action: 0,
-        board,
-        error: '',
-        gameState,
-        terminalInput: '',
-      });
+      this.setState({ board, gameState });
+      this.prepareForNextMove();
     }
   }
 
   /**
-   * Counts the number of neighbors are flagged
-   * @param {*} x The x coordinate of the cell in question
-   * @param {*} y The y coordinate of the cell in question
-   * @param {*} board The game board in it's current state
+   * Counts the number of neighbors are in a list of states
+   * @param {*} x  The x coordinate of the cell in question
+   * @param {*} y  The y coordinate of the cell in question
+   * @param {array} states  A list of states that we want to check a cell against
    */
-  countNeighborFlags(x, y, board) {
+  countNeighborsStates = (x, y, states) => {
     let neighbors = 0;
+    // iterate over each neighboring cell
     for (let i = x - 1; i <= x + 1; i++) {
       for (let j = y - 1; j <= y + 1; j++) {
-        // if the neighbor is flagged, count it
-        if (!(i === x && j === y) && this.inBounds(i, j) && board[i][j].state === 'flagged') {
+        if ( !(i === x && j === y) && this.inBounds(i, j) &&
+          states.includes(this.state.board[i][j].state)
+        ) {
           neighbors += 1;
         }
       }
     }
     return neighbors;
+  }
+
+  /**
+   * Counts the number of neighbors a cell has
+   */
+  countNeighbors(x, y) {
+    return (
+      (x === 0 && y === 0) || 
+      (x === 0 && y === 8) ||
+      (x === 8 && y === 0) ||
+      (x === 8 && y === 8))
+    ? 3
+    : (x=== 0 || x === 8 || y === 0 || y === 8)
+      ? 5
+      : 8;
+  }
+
+  
+  /**
+   * Resets the state to blank to accept the next user command
+   */
+  prepareForNextMove() {
+    this.setState({
+      action: 0,
+      error: '',
+      terminalInput: '',
+    });
   }
 
   /**
@@ -330,19 +340,35 @@ class Game extends Component {
    * @param {*} y 
    */
   revealAllButFlaggedNeighbors(x, y) {
-    const numFlags = this.countNeighborFlags(x, y, this.state.board);
     const { board } = this.state;
+    const numFlags = this.countNeighborsStates(x, y, ['flagged']);
+    const numFR = this.countNeighborsStates(x, y, ['flagged', 'revealed']);
+    const numNeighbors = this.countNeighbors(x, y);
 
-    // if all possible bombs are flagged, reveal the remaining spaces
-    if ( numFlags === board[x][y].value) {
-      for (let i = x - 1; i <= x + 1; i++) {
-        for (let j = y - 1; j <= y + 1; j++) {
-          // if the neighbor is not flagged, reveal it
-          if (!(i === x && j === y) && this.inBounds(i, j) && board[i][j].state !== 'flagged') {
-            this.revealSaidSpace(i, j, true);
+    console.log(numFR, numNeighbors, numFR===numNeighbors);
+
+    // if neighbors are revealed or flagged
+    if (numFR === numNeighbors) {
+      this.setState({
+        action: 0,
+        error: `${x},${y} and it's neighbors are already revealed/flagged`,
+        terminalInput: '',
+      });
+    } else {
+      // if the number of flags around a space is the same as the number of bombs
+      // it is touching, reveal all the unflagged spaces
+      if ( numFlags === board[x][y].value) {
+        for (let i = x - 1; i <= x + 1; i++) {
+          for (let j = y - 1; j <= y + 1; j++) {
+            // if the neighbor is not flagged, reveal it
+            if (!(i === x && j === y) && this.inBounds(i, j) && board[i][j].state !== 'flagged') {
+              this.revealSaidSpace(i, j, true);
+            }
           }
         }
       }
+      
+      this.prepareForNextMove();
     }
   }
 

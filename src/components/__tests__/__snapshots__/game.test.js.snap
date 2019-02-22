@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`calculates cell values properly 1`] = `
+exports[`game snapshot test 1`] = `
 <div
   className="terminal"
 >
@@ -846,9 +846,37 @@ exports[`calculates cell values properly 1`] = `
   </div>
   <br />
   <div
-    className="line"
+    style={
+      Object {
+        "display": "flex",
+        "flexWrap": "wrap",
+      }
+    }
   >
-    Commands: (1) Reveal, (2) Flag
+    <div
+      className="line"
+    >
+      Commands: 
+    </div>
+    <div
+      className="line commandList"
+    >
+      <div
+        className="command"
+      >
+        (1)Reveal, 
+      </div>
+      <div
+        className="command"
+      >
+        (2)Flag, 
+      </div>
+      <div
+        className="command"
+      >
+        (3)Help
+      </div>
+    </div>
   </div>
   <div
     className="line"
