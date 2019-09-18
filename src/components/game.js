@@ -12,7 +12,7 @@ class Game extends Component {
     this.state = {
       action: 0,
       gameState: '',
-      terminalInput: '',
+      terminalInput: 'Click here to start',
     }
     
     this.handleChange = this.handleChange.bind(this);
@@ -77,7 +77,7 @@ class Game extends Component {
       board,
       donePlaying: false,
       gameState: '',
-      terminalInput: '',
+      terminalInput: 'Click here',
     });
   }
 
@@ -136,10 +136,13 @@ class Game extends Component {
     if (!action) {
       // validate the command given
       if (!['1', '2', '3', '4'].includes(value)) {
-        this.setState({
-          error: `${value} is not a valid command`,
-          terminalInput: '',
-        });
+        // this case ignores a blank input
+        if (action !== 0) {
+          this.setState({
+            error: `${value} is not a valid command`,
+            terminalInput: '',
+          });
+        }
       } else if ( value === '3') {
         this.setState({ showInstructions: true });
         this.prepareForNextMove();
@@ -345,7 +348,7 @@ class Game extends Component {
     const numFR = this.countNeighborsStates(x, y, ['flagged', 'revealed']);
     const numNeighbors = this.countNeighbors(x, y);
 
-    console.log(numFR, numNeighbors, numFR===numNeighbors);
+    // console.log(numFR, numNeighbors, numFR===numNeighbors);
 
     // if neighbors are revealed or flagged
     if (numFR === numNeighbors) {
@@ -376,28 +379,40 @@ class Game extends Component {
    * render the component
    */
   render() {
+    const {
+      action,
+      board,
+      donePlaying,
+      error,
+      gameState,
+      showInstructions,
+      terminalInput,
+    } = this.state;
+
+    console.log('render', terminalInput);
+
     return (
       <div className='terminal'>
         <div className='line'>
           Welcome to T<span style={{color: 'red'}}>*</span>Sweeper a text based minesweeper.
         </div>
         <br/>
-        {this.state.showInstructions
+        {showInstructions
           ? <Instructions/>
-          : <Board board={this.state.board} />
+          : <Board board={board} />
         }
-        {!this.state.donePlaying
+        {!donePlaying
           ? (
             <Fragment>
-              <Prompts action={this.state.action} gameState={this.state.gameState} />
-              <div className='line' style={{ color: 'red' }}>{this.state.error}</div>
+              <Prompts action={action} gameState={gameState} />
+              <div className='line' style={{ color: 'red' }}>{error}</div>
               <div className='line'>
                 <form onSubmit={this.handleSubmit}>
                   > <input
                       className='terminal-input'
                       onChange={this.handleChange}
                       type='number' 
-                      value={this.state.terminalInput}
+                      value={terminalInput}
                     />
                 </form>
               </div>
