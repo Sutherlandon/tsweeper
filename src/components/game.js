@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
+import moment from 'moment';
 import Prompts from './prompts';
 import Board from './board';
 import Instructions from './instructions';
@@ -11,8 +12,10 @@ class Game extends Component {
 
     this.state = {
       action: 0,
+      frames: 0,
+      firstMove: true,
       gameState: '',
-      terminalInput: 'Click here to start',
+      terminalInput: '',
     }
     
     this.handleChange = this.handleChange.bind(this);
@@ -76,8 +79,10 @@ class Game extends Component {
       action: 0,
       board,
       donePlaying: false,
+      frames: 0,
+      firstMove: true,
       gameState: '',
-      terminalInput: 'Click here',
+      terminalInput: '',
     });
   }
 
@@ -96,7 +101,10 @@ class Game extends Component {
       }
     }
 
-    this.setState({ gameState: 'win' });
+    this.setState({
+      gameState: 'win',
+      gameTime: moment().diff(this.state.gameStart),
+    });
   }
 
   componentDidMount() {
@@ -104,9 +112,9 @@ class Game extends Component {
     this.buildBoard();
   }
 
-  componentDidUpdate() {
-    console.log(this.state);
-  }
+  // componentDidUpdate() {
+  //   console.log(this.state);
+  // }
 
   /**
    * Handles changes in the text field
@@ -158,12 +166,10 @@ class Game extends Component {
           });
         }
       } else {
-        // if the game is over, build a new game or say goodbye
+        // if the game is over, build a new game if they want
         if (['win', 'lose'].includes(gameState)) {
           if (value === '1') {
             this.buildBoard();
-          } else {
-            this.setState({ donePlaying: true });
           }
         } else {
           this.setState({
@@ -236,7 +242,7 @@ class Game extends Component {
         terminalInput: '',
       });
 
-    // error if coordinates already revealed
+    // if coordinates already revealed
     } else if (board[x][y].state === 'revealed') {
       // if reveal is due to a cascade, do not error on already revealed
       if (cascade) { return; }
@@ -283,8 +289,16 @@ class Game extends Component {
         this.revealSaidSpace(x + 1, y + 1, true);
       }
 
-      this.setState({ board, gameState });
-      this.prepareForNextMove();
+      const newState = { 
+        board,
+        gameState,
+      }
+
+      this.setState(newState);
+
+      if (!cascade) {
+        this.prepareForNextMove();
+      }
     }
   }
 
@@ -329,11 +343,21 @@ class Game extends Component {
    * Resets the state to blank to accept the next user command
    */
   prepareForNextMove() {
-    this.setState({
+    const { firstMove, frames } = this.state;
+    const state = {
       action: 0,
       error: '',
+      frames: frames + 1,
       terminalInput: '',
-    });
+    }
+
+    // start the timer
+    if (firstMove) {
+      state.gameStart = moment();
+      state.firstMove = false;
+    }
+
+    this.setState(state);
   }
 
   /**
@@ -357,10 +381,17 @@ class Game extends Component {
         error: `${x},${y} and it's neighbors are already revealed/flagged`,
         terminalInput: '',
       });
+    // if there are more flags than bombs touching the space
+    } else if (numFlags > board[x][y].value) {
+      this.setState({
+        action: 0,
+        error: `${x},${y} is touching too many flags`,
+        terminalInput: '',
+      });
     } else {
       // if the number of flags around a space is the same as the number of bombs
       // it is touching, reveal all the unflagged spaces
-      if ( numFlags === board[x][y].value) {
+      if (numFlags === board[x][y].value) {
         for (let i = x - 1; i <= x + 1; i++) {
           for (let j = y - 1; j <= y + 1; j++) {
             // if the neighbor is not flagged, reveal it
@@ -382,14 +413,13 @@ class Game extends Component {
     const {
       action,
       board,
-      donePlaying,
       error,
+      frames,
       gameState,
+      gameTime,
       showInstructions,
       terminalInput,
     } = this.state;
-
-    console.log('render', terminalInput);
 
     return (
       <div className='terminal'>
@@ -401,28 +431,24 @@ class Game extends Component {
           ? <Instructions/>
           : <Board board={board} />
         }
-        {!donePlaying
-          ? (
-            <Fragment>
-              <Prompts action={action} gameState={gameState} />
-              <div className='line' style={{ color: 'red' }}>{error}</div>
-              <div className='line'>
-                <form onSubmit={this.handleSubmit}>
-                  > <input
-                      className='terminal-input'
-                      onChange={this.handleChange}
-                      type='number' 
-                      value={terminalInput}
-                    />
-                </form>
-              </div>
-            </Fragment>
-          ) : (
-            <div className='line'>
-              Thanks for playing! Have a nice day! :)
-            </div>
-          )
-        }
+        <Prompts 
+          action={action}
+          frames={frames}
+          gameState={gameState} 
+          gameTime={gameTime}
+        />
+        <div className='line' style={{ color: 'red' }}>{error}</div>
+        <div className='line'>
+          <form onSubmit={this.handleSubmit}>
+            > <input
+                autoFocus
+                className='terminal-input'
+                onChange={this.handleChange}
+                type='number' 
+                value={terminalInput}
+              />
+          </form>
+        </div>
       </div>
     );
   }

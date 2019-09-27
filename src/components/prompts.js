@@ -1,11 +1,19 @@
 import React, { Fragment } from 'react';
 
+function msToTime(ms) {
+  var minutes = Math.floor(ms / 60000);
+  var seconds = ((ms % 60000) / 1000).toFixed(2);
+  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
 const Prompts = (props) => {
   if (props.gameState === 'win') {
     return (
       <Fragment>
         <div className='line' style={{ color: 'green'}}>You Win! :D</div>
-        <div className='line'>Play again? (1) Yes, (2) No.</div>
+        <div className='line' style={{ color: 'green'}}>Moves: {props.frames}</div>
+        <div className='line' style={{ color: 'green'}}>Time: {msToTime(props.gameTime)}</div>
+        <div className='line'>Play again? (1) Yes</div>
       </Fragment>
     );
   }
@@ -14,7 +22,7 @@ const Prompts = (props) => {
     return (
       <Fragment>
         <div className='line' style={{ color: 'red'}}>You lose! :(</div>
-        <div className='line'>Try again? (1) Yes, (2) No.</div>
+        <div className='line'>Try again? (1) Yes</div>
       </Fragment>
     );
   }
