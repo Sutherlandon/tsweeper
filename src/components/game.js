@@ -94,7 +94,7 @@ class Game extends Component {
 
     for (let i = 0; i < BOARD_SIZE; i++) {
       for (let j = 0; j < BOARD_SIZE; j++) {
-        // if bomb and not revealed
+        // if not a bomb and not revealed
         if (board[i][j].value !== -1 && board[i][j].state === 'hidden') {
           return false;
         }
@@ -105,6 +105,23 @@ class Game extends Component {
       gameState: 'win',
       gameTime: moment().diff(this.state.gameStart),
     });
+  }
+
+  /**
+   * Scans the board and determines if the game has been won
+   */
+  checkForLoss() {
+    const { board } = this.state;
+
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
+        // if a bomb and revealed
+        if (board[i][j].value === -1 && board[i][j].state === 'revealed') {
+          return this.setState({ gameState: 'lose' });
+        }
+      }
+    }
+
   }
 
   componentDidMount() {
@@ -196,6 +213,7 @@ class Game extends Component {
       if (action === '1') {
         this.revealSaidSpace(x, y);
         this.checkForWin();
+        this.checkForLoss();
       } else if (action === '2') {
         // validate the flag
         if (board[x][y].state === 'revealed') {
@@ -251,8 +269,6 @@ class Game extends Component {
       
     // passed all pre-checks, reveal the space
     } else {
-      let gameState;
-
       // reveal the space
       board[x][y].state = 'revealed';
 
@@ -265,8 +281,6 @@ class Game extends Component {
             }
           });
         });
-
-        gameState = 'lose';
 
       // if no neighbors are bombs, reveal all neighbors
       } else if (board[x][y].value === 0) {
@@ -289,12 +303,7 @@ class Game extends Component {
         this.revealSaidSpace(x + 1, y + 1, true);
       }
 
-      const newState = { 
-        board,
-        gameState,
-      }
-
-      this.setState(newState);
+      this.setState({ board });
 
       if (!cascade) {
         this.prepareForNextMove();
