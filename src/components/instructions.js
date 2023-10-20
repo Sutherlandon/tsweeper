@@ -13,7 +13,7 @@ const Instructions = () => (
     </div>
     <br />
     <div className='line'>
-      Note: Revealing a space already revealed will reveal all hidden neighbors
+      Hint: Revealing a space already revealed will reveal all hidden neighbors
       if there are enough flags on its neighbors to account for all the bombs it may be touching. 
     </div>
     <br />
